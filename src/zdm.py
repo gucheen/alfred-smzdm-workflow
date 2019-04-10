@@ -18,6 +18,13 @@ def get_items(uri):
             channel = it.get('article_channel', u'')
             price = it.get('article_price', u'无价格')
             category = it['article_category']
+            comments = it.get('article_comments', 0)
+            worthy = float(it.get('article_worthy', 0))
+            unworthy = float(it.get('article_unworthy', 0))
+            count_vote = worthy + unworthy
+            worthy_percentage = 0
+            if count_vote > 0:
+                worthy_percentage = round(worthy / count_vote * 100)
             if isinstance(category, dict):
                 category_str = category.get('title', '')
             if isinstance(category, list):
@@ -27,7 +34,7 @@ def get_items(uri):
             items.append({
                 'uid'           : it['article_id'],
                 'title'         : u"%s: %s" % (channel, it['article_title']), 
-                'subtitle'      : u"%s【%s, %s】" % (price, category_str, tags),
+                'subtitle'      : u"%s【%d评, %s%%值, %s, %s】" % (price, comments, worthy_percentage, category_str, tags),
                 'arg'           : it['article_url'], 
                 'description'   : "test",
                 'icon'          : 'icon.png',
